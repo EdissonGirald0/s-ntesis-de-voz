@@ -67,6 +67,9 @@ def clone_voice_and_tts(audio_path, text, output_path):
     else:
         mostrar_mensaje_error(response_tts)
 
+def clone_voice(audio_path, text, output_path):
+    return clone_voice_and_tts(audio_path, text, output_path)
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Demo ElevenLabs Voice Cloning")
@@ -74,4 +77,4 @@ if __name__ == "__main__":
     parser.add_argument('--text', type=str, required=True, help='Texto a sintetizar con la voz clonada')
     parser.add_argument('--output', type=str, default="static/clone_output.mp3", help='Ruta de salida del audio')
     args = parser.parse_args()
-    clone_voice_and_tts(args.audio, args.text, args.output) 
+    clone_voice(args.audio, args.text, args.output) 
