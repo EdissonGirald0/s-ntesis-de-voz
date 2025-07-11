@@ -1,0 +1,8 @@
+Flask
+requests
+python-dotenv
+sounddevice
+numpy
+TTS
+# Dependencias para TTS open source (Coqui) y ElevenLabs
+# Si quieres usar Real-Time-Voice-Cloning, usa un entorno y requirements separado. 
