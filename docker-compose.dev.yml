@@ -1,0 +1,146 @@
+# 🧪 Docker Compose Override - Development
+# Extiende la configuración base para desarrollo
+
+version: '3.8'
+
+services:
+  
+  # 🚀 APLICACIÓN EN MODO DESARROLLO
+  tts-app:
+    build:
+      target: development  # Usar stage de desarrollo
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=True
+      - LOG_LEVEL=DEBUG
+      - RATE_LIMIT_PER_MINUTE=100  # Más permisivo en dev
+    volumes:
+      # Mount código fuente para hot reload
+      - ./app:/app/app:ro
+      - ./templates:/app/templates:ro
+      - ./static:/app/static:ro
+      # Mount tests para desarrollo
+      - ./tests:/app/tests:ro
+    ports:
+      - "5000:5000"
+      - "5001:5001"  # Puerto adicional para debugging
+    command: >
+      flask run 
+      --host=0.0.0.0 
+      --port=5000 
+      --debug 
+      --reload
+    healthcheck:
+      interval: 10s  # Checks más frecuentes en dev
+      timeout: 5s
+      start_period: 10s
+
+  # 🗄️ POSTGRES EN MODO DESARROLLO
+  postgres:
+    environment:
+      - POSTGRES_PASSWORD=dev_password  # Password más simple para dev
+    ports:
+      - "5432:5432"  # Exponer puerto para herramientas externas
+    volumes:
+      # No persistir datos en desarrollo
+      - postgres_dev_data:/var/lib/postgresql/data
+
+  # 🔄 REDIS EN MODO DESARROLLO
+  redis:
+    ports:
+      - "6379:6379"  # Exponer puerto para debugging
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 128mb
+      --loglevel verbose
+
+  # 🧪 SERVICIO DE TESTING
+  tts-test:
+    build:
+      context: .
+      target: testing
+    container_name: tts-test
+    networks:
+      - tts-network
+    volumes:
+      - ./app:/app/app:ro
+      - ./tests:/app/tests:ro
+      - ./coverage_reports:/app/htmlcov
+    environment:
+      - FLASK_ENV=testing
+      - DATABASE_URL=sqlite:///test.db
+    command: >
+      python -m pytest tests/ 
+      --cov=app 
+      --cov-report=html 
+      --cov-report=term 
+      -v
+    profiles:
+      - testing
+
+  # 📊 JUPYTER NOTEBOOK PARA DESARROLLO
+  jupyter:
+    build:
+      context: .
+      target: development
+    container_name: tts-jupyter
+    ports:
+      - "8888:8888"
+    networks:
+      - tts-network
+    volumes:
+      - ./notebooks:/app/notebooks
+      - ./app:/app/app:ro
+      - ./data:/app/data
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    command: >
+      jupyter lab 
+      --ip=0.0.0.0 
+      --port=8888 
+      --no-browser 
+      --allow-root 
+      --NotebookApp.token='' 
+      --NotebookApp.password=''
+    profiles:
+      - jupyter
+
+  # 🔧 MAILHOG PARA TESTING DE EMAILS
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: tts-mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - tts-network
+    profiles:
+      - email-testing
+
+volumes:
+  postgres_dev_data:
+    driver: local
+
+# =====================================
+# 🚀 COMANDOS DE DESARROLLO
+# =====================================
+#
+# 📦 Iniciar desarrollo completo:
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+#
+# 🧪 Ejecutar tests:
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml --profile testing up tts-test
+#
+# 📊 Iniciar Jupyter:
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml --profile jupyter up jupyter
+#
+# 📧 Testing de emails:
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml --profile email-testing up mailhog
+#
+# 🔄 Hot reload (solo app):
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml up tts-app redis postgres
+#
+# 🧹 Limpiar datos de desarrollo:
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml down -v
+#

@@ -1,0 +1,252 @@
+# 🐳 Docker Ignore File
+# Optimiza la construcción excluyendo archivos innecesarios
+
+# =====================================
+# 📁 DIRECTORIOS GRANDES O TEMPORALES
+# =====================================
+
+# Virtual environments (se recrean en container)
+venv*/
+.venv/
+env/
+.env/
+
+# Node modules si hay frontend
+node_modules/
+npm-debug.log*
+
+# Python cache y compilados
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# =====================================
+# 🗄️ DATOS Y LOGS
+# =====================================
+
+# Archivos de audio temporales
+temp_audio/
+uploads/
+output/
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.flac
+
+# Logs
+logs/
+*.log
+log/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache
+.cache/
+cache/
+.redis/
+
+# =====================================
+# 🔧 HERRAMIENTAS DE DESARROLLO
+# =====================================
+
+# Git
+.git/
+.gitignore
+.gitattributes
+.gitmodules
+
+# IDE y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Coverage y testing
+.coverage
+.pytest_cache/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+htmlcov/
+
+# Linting
+.flake8
+.mypy_cache/
+.pylint.d/
+
+# =====================================
+# 📚 DOCUMENTACIÓN Y EJEMPLOS
+# =====================================
+
+# Documentación (excepto necesaria)
+docs/
+*.md
+!README.md
+!requirements.txt
+
+# Ejemplos y demos
+examples/
+demo/
+samples/
+
+# Assets de desarrollo
+*.psd
+*.ai
+*.sketch
+
+# =====================================
+# 🚀 ARCHIVOS DE DEPLOYMENT
+# =====================================
+
+# Docker files (excepto el Dockerfile principal)
+docker-compose*.yml
+.dockerignore
+Dockerfile.*
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+
+# Deployment scripts
+deploy/
+scripts/
+*.sh
+
+# =====================================
+# 🔐 CONFIGURACIÓN Y SECRETOS
+# =====================================
+
+# Variables de entorno
+.env*
+!.env.example
+*.env
+
+# Certificados y claves
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+ssl/
+certs/
+
+# Configuraciones locales
+config/local/
+local.yml
+local.json
+
+# =====================================
+# 🧪 TESTING Y QA
+# =====================================
+
+# Test data
+test_data/
+fixtures/
+mocks/
+
+# Performance testing
+.locust/
+locustfile.py
+
+# =====================================
+# 📦 ARCHIVOS DE SISTEMA
+# =====================================
+
+# Archivos comprimidos
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =====================================
+# 🌐 ESPECÍFICOS DEL PROYECTO
+# =====================================
+
+# Modelos de TTS (se descargan en runtime)
+models/
+*.tts
+*.pth
+*.pt
+
+# Assets estáticos grandes
+static/large/
+media/
+
+# Backups
+backups/
+*.backup
+*.bak
+
+# =====================================
+# 💡 NOTAS IMPORTANTES
+# =====================================
+
+# ✅ Incluir en la imagen:
+# - Código fuente (app/)
+# - Requirements
+# - Templates
+# - Static files pequeños
+# - Scripts de configuración
+
+# ❌ Excluir de la imagen:
+# - Datos temporales
+# - Archivos de desarrollo
+# - Configuraciones locales
+# - Assets grandes
+# - Logs y cache
+
+# 🎯 Objetivos:
+# - Imagen más pequeña
+# - Build más rápido
+# - Menos capas en Docker
+# - Mejor seguridad
+
+# =====================================

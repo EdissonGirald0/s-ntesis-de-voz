@@ -1,4 +1,4 @@
-#!/home/dev1/Escritorio/proyectos/elevenLabs/venv-coqui/bin/python3
+#!/workspaces/s-ntesis-de-voz/venv-coqui/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

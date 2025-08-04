@@ -42,13 +42,37 @@ def create_app():
         try:
             venv_python = os.path.join(os.path.dirname(__file__), '..', 'venv-coqui', 'bin', 'python')
             script_path = os.path.join(os.path.dirname(__file__), 'tts_coqui.py')
+            
             if not os.path.exists(venv_python):
                 return False, "Entorno virtual de Coqui no encontrado"
+            
+            if not os.path.exists(script_path):
+                return False, "Script tts_coqui.py no encontrado"
+            
+            # Asegurar que el directorio de salida existe
+            output_dir = os.path.dirname(output_path)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir, exist_ok=True)
+            
+            print(f"🔊 Ejecutando TTS Coqui: {text} -> {output_path}")
             cmd = [venv_python, script_path, '--text', text, '--output', output_path]
             result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-            return True, result.stdout
+            
+            # Verificar que el archivo se creó
+            if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
+                print(f"✅ TTS Coqui exitoso: {output_path}")
+                return True, result.stdout
+            else:
+                return False, "No se pudo generar el archivo de audio"
+                
+        except subprocess.CalledProcessError as e:
+            error_msg = f"Error ejecutando script: {e.stderr if e.stderr else str(e)}"
+            print(f"❌ {error_msg}")
+            return False, error_msg
         except Exception as e:
-            return False, str(e)
+            error_msg = f"Error inesperado: {str(e)}"
+            print(f"❌ {error_msg}")
+            return False, error_msg
     
     def run_coqui_voice_cloning(audio_path, text, output_path):
         """Ejecuta clonación de voz con Coqui"""
@@ -160,11 +184,11 @@ if __name__ == '__main__':
         sys.exit(1)
     
     print("✅ Aplicación creada correctamente")
-    print("🚀 Iniciando Flask en http://localhost:8080")
-    print("💡 Para probar, visita: http://localhost:8080/health")
+    print("🚀 Iniciando Flask en http://localhost:5000")
+    print("💡 Para probar, visita: http://localhost:5000/health")
     
     try:
-        app.run(debug=True, host='0.0.0.0', port=8080)
+        app.run(debug=True, host='0.0.0.0', port=5000)
     except Exception as e:
         print(f"❌ Error iniciando Flask: {e}")
         import traceback
